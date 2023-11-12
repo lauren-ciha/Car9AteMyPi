@@ -19,9 +19,10 @@ class Driver:
     def __init__(self, target, face_recognizer):
         self.recognizer = face_recognizer
         self.target = target
+        self.mdev = mDEV()  # create object
 
-    # get the location of the face from the facial recognition
     def make_movement_given_frame(self, frame):
+        # get the location of the target face in the frame
         face_locations, face_names = self.recognizer.find_locs_given_frame(frame)
         index = face_names.index(self.target)
         coords = face_locations[index]
@@ -34,8 +35,6 @@ class Driver:
         span_y = abs(top - bottom)
         span_x = abs(right - left)
 
-        mdev = mDEV()  # create object
-
         # initialize variables used to call move
         left_pwm = 0
         right_pwm = 0
@@ -45,18 +44,16 @@ class Driver:
         # if the face is to the right of our center bounds, move right
         if center_x > self.rightCenterBound + self.goal_tolerance:
             print("right")
-            value = (
-                                center_x - self.centerX) / self.centerX  # the difference divided by the max difference, get proportion
+            # the difference divided by the max difference, get proportion
+            value = abs(center_x - self.centerX) / self.centerX
             steering_angle = 30 * value  # needs to be positive, change on how far over the bound it is
-            # mdev.move(0, 0, 30)  # Car TurnRight
 
         # if the face is to the left of our center bounds, move left
         if center_x < self.leftCenterBound - self.goal_tolerance:
             print("left")
-            value = (
-                                self.centerX - center_x) / self.centerX  # the difference divided by the max difference, get proportion
+            # the difference divided by the max difference, get proportion
+            value = abs(self.centerX - center_x) / self.centerX
             steering_angle = -30 * value  # needs to be negative, change on how far over the bound it is
-            # mdev.move(0, 0, -30)  # Car TurnLeft
 
         # if were too small (if either are not less than, we're not too small), move forward
         if span_x < self.goal_x - self.goal_tolerance and span_y < self.goal_y - self.goal_tolerance:
@@ -81,4 +78,5 @@ class Driver:
             # ????
             # mdev.move(10,10,0) # Car move forward
 
-        mdev.move(left_pwm, right_pwm, steering_angle)
+        self.mdev.move(left_pwm, right_pwm, steering_angle)
+        time.sleep(0.001)
