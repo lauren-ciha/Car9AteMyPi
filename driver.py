@@ -1,8 +1,8 @@
 # MOVE THE ROBOT TO KEEP THE FACE CENTERED
 # get the face location as 2 pairs of (x,y) - top right, bottom left
 # 720 x 1280 height, width
+from Freenove_Three_Wheeled_Smart_Car_Kit_for_Raspberry_Pi_Master.Server.mDev import *
 from face_rec import FaceRecognizer
-from Freenove_Three-wheeled_Smart_Car_Kit_for_Raspberry_Pi-master/Server/mDev import *
 
 class driver():
     centerBuffer = 50
@@ -26,13 +26,18 @@ class driver():
         left = coords[3]
 
         # if the face is to the right of our center bounds, move right
-        if right > rightCenterBound:
+        if right > self.rightCenterBound:
+            print("right")
 
         # if the face is to the left of our center bounds, move left
-        if left < leftCenterBound:
+        if left < self.leftCenterBound:
+            print("left")
 
         # if the face is above our center bounds, back up
-        if top > upperCenterBound:
+        if top > self.upperCenterBound:
+            print("up")
 
         # if the face is below our center bounds, move forward
-        if bottom < lowerCenterBound:
+        if bottom < self.lowerCenterBound:
+            print("down")
+
