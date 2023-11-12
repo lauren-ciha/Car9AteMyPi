@@ -5,13 +5,16 @@ from Freenove_Three_Wheeled_Smart_Car_Kit_for_Raspberry_Pi_Master.Server.mDev im
 
 
 class Driver:
+
+    frame_width = 1280
+    frame_height = 720
     centerBuffer = 50
-    centerX = (1280 / 2)
-    centerY = (720 / 2)
-    leftCenterBound = (1280 / 2) - centerBuffer  # 590
-    rightCenterBound = (1280 / 2) + centerBuffer  # 690
-    upperCenterBound = (720 / 2) + centerBuffer  # 410
-    lowerCenterBound = (720 / 2) - centerBuffer  # 310
+    centerX = (frame_width / 2)
+    centerY = (frame_height / 2)
+    leftCenterBound = (frame_width / 2) - centerBuffer  # 590
+    rightCenterBound = (frame_width / 2) + centerBuffer  # 690
+    upperCenterBound = (frame_height / 2) + centerBuffer  # 410
+    lowerCenterBound = (frame_height / 2) - centerBuffer  # 310
     goal_x = 100
     goal_y = 100
     goal_tolerance = 10
@@ -36,8 +39,8 @@ class Driver:
         span_x = abs(right - left)
 
         # initialize variables used to call move
-        left_pwm = 0
-        right_pwm = 0
+        left_pwm = 1000
+        right_pwm = 1000
         steering_angle = 0
 
         # change the variables depending on where the face is
@@ -65,19 +68,21 @@ class Driver:
             print("too big")
             left_pwm = abs(left_pwm) * -1
             right_pwm = abs(right_pwm) * -1
+            # if we're going backwards, to turn left we actually want to steer right, and vice versa
+            steering_angle = steering_angle * -1
 
         # if the face is above our center bounds, tilt camera up
         if center_y > self.upperCenterBound + self.goal_tolerance:
             print("up")
             value = abs(self.centerY - center_y) / self.centerY
-            mdev.writeReg(mdev.CMD_SERVO3, numMap(90 + value, 0, 180, 500, 2500))
+            self.mdev.writeReg(mdev.CMD_SERVO3, numMap(90 + value, 0, 180, 500, 2500))
 
         # if the face is below our center bounds, tilt camera down
         # this is probably wrong
         if center_y < self.lowerCenterBound - self.goal_tolerance:
             print("down")
             value = abs(self.centerY - center_y) / self.centerY
-            mdev.writeReg(mdev.CMD_SERVO3, numMap(90 - value, 0, 180, 500, 2500))
+            self.mdev.writeReg(mdev.CMD_SERVO3, numMap(90 - value, 0, 180, 500, 2500))
 
         self.mdev.move(left_pwm, right_pwm, steering_angle)
         time.sleep(0.001)
