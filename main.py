@@ -12,6 +12,9 @@ import numpy as np
 # specific demo. If you have trouble installing it, try any of the other demos that don't require it instead.
 
 # Get a reference to webcam #0 (the default one)
+from driver import Driver
+from face_rec import FaceRecognizer
+
 video_capture = cv2.VideoCapture(0)
 
 # Load a sample picture and learn how to recognize it.
@@ -94,3 +97,31 @@ while True:
 # Release handle to the webcam
 video_capture.release()
 cv2.destroyAllWindows()
+
+
+def main():
+    video_capture = cv2.VideoCapture(0)
+
+    face_imgs = [
+        "casey_face.png"
+    ]
+    face_labels = [
+        "Casey"
+    ]
+    face_recognizer = FaceRecognizer(face_imgs=face_imgs, face_labels=face_labels)
+    driver = Driver("Casey", face_recognizer)
+
+    while True:
+        # Grab a single frame of video
+        ret, frame = video_capture.read()
+        process_this_frame = True
+        if process_this_frame:
+            driver.make_movement_given_frame(frame)
+        process_this_frame = not process_this_frame
+
+        # Hit 'q' on the keyboard to quit!
+        if cv2.waitKey(1) & 0xFF == ord('q'):
+            break
+
+    video_capture.release()
+    cv2.destroyAllWindows()
