@@ -4,7 +4,7 @@
 from Freenove_Three_Wheeled_Smart_Car_Kit_for_Raspberry_Pi_Master.Server.mDev import *
 from face_rec import FaceRecognizer
 
-class driver():
+class Driver:
     centerBuffer = 50
     leftCenterBound = (1280 / 2) - centerBuffer
     rightCenterBound = (1280 / 2) + centerBuffer
