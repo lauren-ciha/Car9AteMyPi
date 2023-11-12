@@ -69,14 +69,15 @@ class Driver:
         # if the face is above our center bounds, tilt camera up
         if center_y > self.upperCenterBound + self.goal_tolerance:
             print("up")
-            # ????
-            # mdev.move(-10,-10,0) # Car back up
+            value = abs(self.centerY - center_y) / self.centerY
+            mdev.writeReg(mdev.CMD_SERVO3, numMap(90 + value, 0, 180, 500, 2500))
 
         # if the face is below our center bounds, tilt camera down
+        # this is probably wrong
         if center_y < self.lowerCenterBound - self.goal_tolerance:
             print("down")
-            # ????
-            # mdev.move(10,10,0) # Car move forward
+            value = abs(self.centerY - center_y) / self.centerY
+            mdev.writeReg(mdev.CMD_SERVO3, numMap(90 - value, 0, 180, 500, 2500))
 
         self.mdev.move(left_pwm, right_pwm, steering_angle)
         time.sleep(0.001)
